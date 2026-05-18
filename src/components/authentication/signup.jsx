@@ -20,7 +20,12 @@ const SignIn = () => {
     'Royal College',
     'Ananda College', 
     'Ladies College',
-    'St. Thomas College'
+    'St. Thomas College',
+    "President's College, Kotte",
+    'Lyceum College, Nugegoda',
+    'Sirimavo Bandaranaike Vidyalaya, Colombo 07',
+    'Colombo International School',
+    'Gateway College'
   ];
 
   const grades = [
