@@ -580,7 +580,13 @@ const submitQuiz = async () => {
     uid,
     score,
     zone: currentZone,
-    drivingCheckAnswers: localStorage.getItem("drivingCheckAnswers")?localStorage.getItem("drivingCheckAnswers"):{}
+    //drivingCheckAnswers: localStorage.getItem("drivingCheckAnswers")?localStorage.getItem("drivingCheckAnswers"):{} ///mama change kare 
+    drivingCheckAnswers: (() => {
+      try {
+        const raw = localStorage.getItem("drivingCheckAnswers");
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
+    })()
   };
 
   try {
