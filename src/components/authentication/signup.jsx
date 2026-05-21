@@ -17,11 +17,7 @@ const SignIn = () => {
   const navigate = useNavigate();
 
   const schools = [
-    'Royal College',
-    'Ananda College', 
-    'Ladies College',
-    'St. Thomas College',
-    "President's College, Kotte",
+    'President s College, Kotte',
     'Lyceum College, Nugegoda',
     'Sirimavo Bandaranaike Vidyalaya, Colombo 07',
     'Colombo International School',
