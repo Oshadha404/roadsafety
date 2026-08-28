@@ -192,6 +192,69 @@
   justify-content: space-between;
 }
 
+.trivia-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 5, 44, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.trivia-modal {
+  width: min(560px, 100%);
+  background: #fff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+}
+
+.trivia-badge {
+  display: inline-block;
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #800080;
+}
+
+.trivia-question {
+  margin: 0 0 12px;
+  font-size: 22px;
+  color: #11052c;
+}
+
+.trivia-answer {
+  margin: 0 0 16px;
+  line-height: 1.6;
+  color: #4b4b4b;
+}
+
+.trivia-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.trivia-skip-btn {
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(90.04deg, #800080 0.03%, #ffc0cb 99.96%);
+  color: #fff;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.trivia-timer {
+  font-size: 14px;
+  color: #666;
+}
 
 .sad-img{
   width:15vw;

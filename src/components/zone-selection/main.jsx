@@ -127,75 +127,36 @@
 
 // export default Main;
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Card, Button, Row, Col } from 'antd';
-import { DoubleRightOutlined, LockOutlined, TrophyOutlined } from '@ant-design/icons';
+import { DoubleRightOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import '../../style/zone.css';
 import Zone1 from '../../assets/Zone1.png';
 import Zone2 from '../../assets/Zone2.png';
 import Zone3 from '../../assets/Zone3.png';
 import Zone4 from '../../assets/Zone4.png';
-import FinalZone from '../../assets/Achievement.png'; // Add your final zone image here
+import FinalZone from '../../assets/Achievement.png';
 import { motion } from 'framer-motion';
 
 const { Meta } = Card;
 
-const normalizeUnlockedZone = (val) => {
-  if (!val) return 'zone01';
-  const s = String(val).trim().toLowerCase();
-
-  const matchZone = s.match(/^zone0?(\d+)$/);
-  if (matchZone) {
-    const num = matchZone[1].padStart(2, '0');
-    return `zone${num}`;
-  }
-
-  const digits = s.replace(/\D/g, '');
-  if (digits) {
-    const num = digits.padStart(2, '0');
-    return `zone${num}`;
-  }
-
-  return 'zone01';
-};
-
 const Main = () => {
   const navigate = useNavigate();
-  const [unlockedZone, setUnlockedZone] = useState('zone01');
-
-  useEffect(() => {
-    const raw = localStorage.getItem('unlockedZone');
-    console.log('Raw unlockedZone from localStorage:', raw);
-    
-    const normalized = normalizeUnlockedZone(raw);
-    console.log('Normalized unlockedZone:', normalized);
-
-    const allowed = ['zone01', 'zone02', 'zone03', 'zone04'];
-    const finalZone = allowed.includes(normalized) ? normalized : 'zone01';
-    
-    console.log('Final unlockedZone:', finalZone);
-
-    setUnlockedZone(finalZone);
-    localStorage.setItem('unlockedZone', finalZone);
-  }, []);
 
   const handleZoneClick = (zoneName) => {
     localStorage.setItem('zone', zoneName);
     navigate(`/questionnaire?zone=${zoneName}`);
   };
 
-  const zonesOrder = ['zone01', 'zone02', 'zone03', 'zone04'];
-  const unlockedIndex = zonesOrder.indexOf(unlockedZone);
-
   const zones = [
     { id: 'zone01', title: 'Zone 01', image: Zone1 },
     { id: 'zone02', title: 'Zone 02', image: Zone2 },
     { id: 'zone03', title: 'Zone 03', image: Zone3 },
     { id: 'zone04', title: 'Zone 04', image: Zone4 },
-  ].map((zone, index) => ({
+  ].map((zone) => ({
     ...zone,
-    locked: index !== unlockedIndex,
+    locked: true,
   }));
 
   return (
@@ -236,22 +197,29 @@ const Main = () => {
             </Col>
           ))}
 
-          {/* Final Zone Card */}
-          <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+          <Col xs={24} sm={12} md={12} lg={6} xl={6} key="final">
             <Card
-              hoverable={false}
-              cover={<img alt="Final Zone" src={FinalZone} />}
-              className="zone-card final-zone-card locked-card"
+              hoverable
+              cover={<img alt="Final zone" src={FinalZone} />}
+              className="zone-card final-zone-card"
               actions={[
-                <Button disabled className="zone-button locked-button">
-                  Coming Soon <TrophyOutlined />
+                <Button
+                  type="primary"
+                  onClick={() => handleZoneClick('final')}
+                  className="zone-button"
+                >
+                  Select Zone
+                  <motion.span
+                    initial={{ x: 0 }}
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity, repeatType: 'reverse' }}
+                  >
+                    <DoubleRightOutlined />
+                  </motion.span>
                 </Button>
               ]}
             >
-              {/* <Meta 
-                title="Final Zone" 
-                description="Complete all zones to unlock" 
-              /> */}
+              <Meta title="Final zone" />
             </Card>
           </Col>
         </Row>

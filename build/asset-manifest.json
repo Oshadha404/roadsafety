@@ -1,23 +1,25 @@
 {
   "files": {
-    "main.css": "/static/css/main.fda74818.css",
-    "main.js": "/static/js/main.3bc0864a.js",
-    "static/js/488.f26ed90c.chunk.js": "/static/js/488.f26ed90c.chunk.js",
+    "main.css": "/static/css/main.67328e13.css",
+    "main.js": "/static/js/main.16518a0e.js",
+    "static/js/488.5d689c42.chunk.js": "/static/js/488.5d689c42.chunk.js",
     "static/media/Anxiety.gif": "/static/media/Anxiety.676c08e1dcb116fc03e4.gif",
     "static/media/Happy.gif": "/static/media/Happy.6adcd48c808a623820eb.gif",
+    "static/media/Achievement.png": "/static/media/Achievement.d99ec8fcd353ae6a29e5.png",
     "static/media/High five.gif": "/static/media/High five.ddb2c4d5d6a46466efcc.gif",
+    "static/media/Feedback.png": "/static/media/Feedback.fdc35464cbafa24e7dd0.png",
     "static/media/Zone4.png": "/static/media/Zone4.ea8a8f0fe4ca22a1de57.png",
     "static/media/Zone3.png": "/static/media/Zone3.2f18a3cac3b3325995e4.png",
     "static/media/Zone1.png": "/static/media/Zone1.195f6c80bdb7d2957f94.png",
     "static/media/Zone2.png": "/static/media/Zone2.53be47fe76ebf52187df.png",
     "static/media/logo.svg": "/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/index.html",
-    "main.fda74818.css.map": "/static/css/main.fda74818.css.map",
-    "main.3bc0864a.js.map": "/static/js/main.3bc0864a.js.map",
-    "488.f26ed90c.chunk.js.map": "/static/js/488.f26ed90c.chunk.js.map"
+    "main.67328e13.css.map": "/static/css/main.67328e13.css.map",
+    "main.16518a0e.js.map": "/static/js/main.16518a0e.js.map",
+    "488.5d689c42.chunk.js.map": "/static/js/488.5d689c42.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.fda74818.css",
-    "static/js/main.3bc0864a.js"
+    "static/css/main.67328e13.css",
+    "static/js/main.16518a0e.js"
   ]
 }

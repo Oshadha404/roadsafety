@@ -397,6 +397,7 @@ import Sad from '../../assets/Anxiety.gif'
 import Happy from '../../assets/Happy.gif'
 import HighFive from '../../assets/High five.gif'
 import '../../style/results.css'
+import roadSafetyFacts from '../../roadSafetyFacts.json';
 
 const Quiz = () => {
   const navigate = useNavigate();
@@ -411,40 +412,28 @@ const Quiz = () => {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showFireworks, setShowFireworks] = useState(false);
   const [timeLeft, setTimeLeft] = useState(20);
+  const [trivia, setTrivia] = useState(null);
+  const [showTrivia, setShowTrivia] = useState(false);
 
+  const getRandomTrivia = () => {
+    if (!roadSafetyFacts || roadSafetyFacts.length === 0) return null;
+    const randomIndex = Math.floor(Math.random() * roadSafetyFacts.length);
+    return roadSafetyFacts[randomIndex];
+  };
 
-useEffect(() => {
-  const queryParams = new URLSearchParams(location.search);
-  const zone = queryParams.get('zone');
-  
-  if (zone) {
-    // Fetch questions from API
-    fetch(`${process.env.REACT_APP_API_URL}/api/zone/${zone}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch questions');
-        }
-        return response.json();
-      })
-      .then(data => {
-          const questionsCopy = [...data];
-          const selected = [];
+  const startTriviaTransition = () => {
+    const nextTrivia = getRandomTrivia();
+    setTrivia(nextTrivia);
+    setShowTrivia(true);
+  };
 
-          while (selected.length < 10 && questionsCopy.length > 0) {
-            const randomIndex = Math.floor(Math.random() * questionsCopy.length);
-            selected.push(questionsCopy.splice(randomIndex, 1)[0]); 
-            // splice removes the picked question from the array
-          }
-
-          setQuestions(selected);
-          setLoading(false);
-        })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }
-}, []);
+  const continueToNextQuestion = () => {
+    setShowTrivia(false);
+    setTrivia(null);
+    setCurrentQuestion((prev) => prev + 1);
+    setAnswerSelected(false);
+    setTimeLeft(20);
+  };
 
 useEffect(() => {
   const queryParams = new URLSearchParams(location.search);
@@ -463,7 +452,9 @@ useEffect(() => {
         const questionsCopy = [...data];
         const selected = [];
 
-        while (selected.length < 5 && questionsCopy.length > 0) {
+        const questionCount = zone === 'final' ? 20 : 5;
+
+        while (selected.length < questionCount && questionsCopy.length > 0) {
           const randomIndex = Math.floor(Math.random() * questionsCopy.length);
           selected.push(questionsCopy.splice(randomIndex, 1)[0]); 
         }
@@ -475,6 +466,8 @@ useEffect(() => {
         setAnswerSelected(false);
         setQuizCompleted(false);
         setShowFireworks(false);
+        setShowTrivia(false);
+        setTrivia(null);
         setTimeLeft(20);         // reset timer
       })
       .catch(err => {
@@ -486,14 +479,14 @@ useEffect(() => {
 
 // Timer effect
 useEffect(() => {
-  if (quizCompleted || loading) return;
+  if (quizCompleted || loading || showTrivia) return;
 
   setTimeLeft(20); // Reset timer when question changes
 
-  const timer = setInterval(() => {
+  const timer = window.setInterval(() => {
     setTimeLeft((prevTime) => {
       if (prevTime <= 1) {
-        clearInterval(timer);
+        window.clearInterval(timer);
         
         // If no answer selected when time runs out, mark as unanswered (will be counted as 0)
         setAnswers(prevAnswers => {
@@ -504,10 +497,9 @@ useEffect(() => {
           return newAnswers;
         });
         
-        // Auto-advance to next question when time runs out
+        // Show trivia before auto-advancing to the next question
         if (currentQuestion < questions.length - 1) {
-          setCurrentQuestion(currentQuestion + 1);
-          setAnswerSelected(false);
+          startTriviaTransition();
         } else {
           setQuizCompleted(true);
           setShowFireworks(true);
@@ -518,8 +510,25 @@ useEffect(() => {
     });
   }, 1000);
 
-  return () => clearInterval(timer);
-}, [currentQuestion, quizCompleted, loading, questions.length]);
+  return () => window.clearInterval(timer);
+}, [currentQuestion, quizCompleted, loading, questions.length, showTrivia]);
+
+useEffect(() => {
+  if (!showTrivia) return;
+
+  const timer = window.setTimeout(() => {
+    if (currentQuestion < questions.length - 1) {
+      continueToNextQuestion();
+    } else {
+      setQuizCompleted(true);
+      setShowFireworks(true);
+      setShowTrivia(false);
+      setTrivia(null);
+    }
+  }, 10000);
+
+  return () => window.clearTimeout(timer);
+}, [showTrivia, currentQuestion, questions.length]);
 
 
   const handleAnswerSelect = (answer) => {
@@ -530,9 +539,10 @@ useEffect(() => {
   };
 
   const nextQuestion = () => {
+    if (!answerSelected) return;
+
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setAnswerSelected(false);
+      startTriviaTransition();
     } else {
       setQuizCompleted(true);
       setShowFireworks(true);
@@ -601,7 +611,7 @@ const submitQuiz = async () => {
     const currentIndex = zones.indexOf(currentZone);
 
     // Check if user completed zone 4 (last zone)
-    if (currentZone === "zone04") {
+    if (currentZone === "zone04" || currentZone === "final") {
       // Lock all zones after completion
       localStorage.setItem("unlockedZone", "zone04");
       
@@ -727,6 +737,21 @@ const submitQuiz = async () => {
   return (
     <div className='main-frame'>
       {showFireworks && <div className="confetti-container">{renderConfetti()}</div>}
+      {showTrivia && trivia && (
+        <div className="trivia-overlay" role="dialog" aria-modal="true">
+          <div className="trivia-modal">
+            <p className="trivia-badge">Did You Know?</p>
+            <h3 className="trivia-question">{trivia.question}</h3>
+            <p className="trivia-answer">{trivia.answer}</p>
+            <div className="trivia-actions">
+              <button className="trivia-skip-btn" onClick={continueToNextQuestion}>
+                Skip
+              </button>
+              <span className="trivia-timer">Next question in 10s</span>
+            </div>
+          </div>
+        </div>
+      )}
       <div className='sub-frame'>
         {!quizCompleted ? (
           <>
@@ -837,7 +862,7 @@ const submitQuiz = async () => {
                 const zones = ["zone01", "zone02", "zone03", "zone04"];
                 const currentIndex = zones.indexOf(currentZone);
 
-                return currentIndex < zones.length - 1 ? (
+                return currentZone !== "final" && currentIndex < zones.length - 1 ? (
                   <>
                     Next Challenge &nbsp;
                     <motion.span 
